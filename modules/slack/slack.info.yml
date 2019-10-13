@@ -1,0 +1,11 @@
+name: 'Slack'
+type: module
+description: 'Integration with Slack.com service.'
+# core: 8.x
+configure: slack.admin_settings
+
+# Information added by Drupal.org packaging script on 2017-10-19
+version: '8.x-1.2'
+core: '8.x'
+project: 'slack'
+datestamp: 1508381050
