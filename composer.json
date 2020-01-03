@@ -32,6 +32,7 @@
         "drupal/publishcontent": "^1.0.0",
         "drupal/rules": "^3.0.0-alpha4",
         "drupal/rules_http_client": "^1.0.0",
+        "drupal/select2": "^1.5",
         "drupal/slack": "^1.2.0",
         "drupal/token": "^1.5.0",
         "drupal/typed_data": "^1.0.0-alpha2",
