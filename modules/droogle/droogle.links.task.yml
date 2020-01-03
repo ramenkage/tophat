@@ -1,5 +1,0 @@
-droogle:
-  route_name: droogle
-  title: Connect Google Drive
-  base_route: system.admin_content
-  weight: 10
