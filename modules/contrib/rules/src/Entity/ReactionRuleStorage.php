@@ -2,6 +2,7 @@
 
 namespace Drupal\rules\Entity;
 
+use Drupal\Core\Cache\MemoryCache\MemoryCacheInterface;
 use Drupal\Core\Config\Entity\ConfigEntityStorage;
 use Drupal\Core\DrupalKernelInterface;
 use Drupal\Core\State\StateInterface;
@@ -55,12 +56,14 @@ class ReactionRuleStorage extends ConfigEntityStorage {
    * @param \Drupal\Core\State\StateInterface $state_service
    *   The state service.
    * @param \Drupal\Core\DrupalKernelInterface $drupal_kernel
-   *   The drupal kernel.
+   *   The Drupal kernel.
    * @param \Drupal\rules\Core\RulesEventManager $event_manager
    *   The Rules event manager.
+   * @param \Drupal\Core\Cache\MemoryCache\MemoryCacheInterface|null $memory_cache
+   *   The memory cache backend.
    */
-  public function __construct(EntityTypeInterface $entity_type, ConfigFactoryInterface $config_factory, UuidInterface $uuid_service, LanguageManagerInterface $language_manager, StateInterface $state_service, DrupalKernelInterface $drupal_kernel, RulesEventManager $event_manager) {
-    parent::__construct($entity_type, $config_factory, $uuid_service, $language_manager);
+  public function __construct(EntityTypeInterface $entity_type, ConfigFactoryInterface $config_factory, UuidInterface $uuid_service, LanguageManagerInterface $language_manager, StateInterface $state_service, DrupalKernelInterface $drupal_kernel, RulesEventManager $event_manager, MemoryCacheInterface $memory_cache = NULL) {
+    parent::__construct($entity_type, $config_factory, $uuid_service, $language_manager, $memory_cache);
 
     $this->stateService = $state_service;
     $this->drupalKernel = $drupal_kernel;
@@ -78,7 +81,8 @@ class ReactionRuleStorage extends ConfigEntityStorage {
       $container->get('language_manager'),
       $container->get('state'),
       $container->get('kernel'),
-      $container->get('plugin.manager.rules_event')
+      $container->get('plugin.manager.rules_event'),
+      $container->get('entity.memory_cache')
     );
   }
 
@@ -90,7 +94,8 @@ class ReactionRuleStorage extends ConfigEntityStorage {
    */
   protected function getRegisteredEvents() {
     $events = [];
-    foreach ($this->loadMultiple() as $rules_config) {
+    // 'status' == TRUE when the reaction rule is active.
+    foreach ($this->loadByProperties(['status' => TRUE]) as $rules_config) {
       foreach ($rules_config->getEventNames() as $event_name) {
         $event_name = $this->eventManager->getEventBaseName($event_name);
         if (!isset($events[$event_name])) {

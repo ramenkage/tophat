@@ -17,7 +17,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   id = "rules_email_to_users_of_role",
  *   label = @Translation("Send email to all users of a role"),
  *   category = @Translation("System"),
- *   context = {
+ *   context_definitions = {
  *     "roles" = @ContextDefinition("entity:user_role",
  *       label = @Translation("Roles"),
  *       description = @Translation("The roles to which to send the email."),
@@ -115,7 +115,7 @@ class SystemMailToUsersOfRole extends RulesActionBase implements ContainerFactor
    *   (optional) Reply to email address.
    * @param \Drupal\Core\Language\LanguageInterface $language
    *   (optional) Language object. If not specified, email will be sent to each
-   *   receipient in the recipient's preferred language.
+   *   recipient in the recipient's preferred language.
    */
   protected function doExecute(array $roles, $subject, $message, $reply = NULL, LanguageInterface $language = NULL) {
     if (empty($roles)) {

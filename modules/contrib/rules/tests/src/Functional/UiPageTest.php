@@ -66,7 +66,7 @@ class UiPageTest extends RulesBrowserTestBase {
     $this->fillField('Condition', 'rules_node_is_promoted');
     $this->pressButton('Continue');
 
-    $this->fillField('context[node][setting]', '1');
+    $this->fillField('context_definitions[node][setting]', 'node');
     $this->pressButton('Save');
 
     $assert->statusCodeEquals(200);
@@ -87,7 +87,7 @@ class UiPageTest extends RulesBrowserTestBase {
     $this->fillField('Condition', 'rules_node_is_promoted');
     $this->pressButton('Continue');
 
-    $this->fillField('context[node][setting]', '1');
+    $this->fillField('context_definitions[node][setting]', 'node');
     $this->pressButton('Save');
 
     /** @var \Drupal\Tests\WebAssert $assert */
@@ -109,11 +109,11 @@ class UiPageTest extends RulesBrowserTestBase {
     // Setup a rule with one condition.
     $this->testCreateReactionRule();
 
-    $this->clickLink('Delete');
-
     /** @var \Drupal\Tests\WebAssert $assert */
     $assert = $this->assertSession();
-    $assert->pageTextContains('Are you sure you want to delete Condition: Node is promoted from Test rule?');
+
+    $this->clickLink('Delete');
+    $assert->pageTextContains('Are you sure you want to delete Node is promoted from Test rule?');
 
     $this->pressButton('Delete');
     $assert->pageTextContains('You have unsaved changes.');
@@ -149,13 +149,13 @@ class UiPageTest extends RulesBrowserTestBase {
     /** @var \Drupal\Tests\WebAssert $assert */
     $assert = $this->assertSession();
     // Check that the label shows up on the Rule edit page.
-    $assert->pageTextContains('Condition: Node is promoted');
+    $assert->pageTextContains('Node is promoted');
 
     // Edit the condition, negate it, then check the label again.
     $this->clickLink('Edit');
     $this->fillField('Negate', 1);
     $this->pressButton('Save');
-    $assert->pageTextContains('Condition: NOT Node is promoted');
+    $assert->pageTextContains('NOT Node is promoted');
   }
 
   /**
@@ -183,9 +183,9 @@ class UiPageTest extends RulesBrowserTestBase {
     $this->pressButton('Switch to data selection');
     $this->pressButton('Switch to the direct input mode');
 
-    $this->fillField('context[to][setting]', 'klausi@example.com');
-    $this->fillField('context[subject][setting]', 'subject');
-    $this->fillField('context[message][setting]', 'message');
+    $this->fillField('context_definitions[to][setting]', 'klausi@example.com');
+    $this->fillField('context_definitions[subject][setting]', 'subject');
+    $this->fillField('context_definitions[message][setting]', 'message');
     $this->pressButton('Save');
 
     /** @var \Drupal\Tests\WebAssert $assert */

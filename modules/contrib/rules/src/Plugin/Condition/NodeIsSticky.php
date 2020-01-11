@@ -12,9 +12,11 @@ use Drupal\rules\Core\RulesConditionBase;
  *   id = "rules_node_is_sticky",
  *   label = @Translation("Node is sticky"),
  *   category = @Translation("Node"),
- *   context = {
+ *   context_definitions = {
  *     "node" = @ContextDefinition("entity:node",
- *       label = @Translation("Node")
+ *       label = @Translation("Node"),
+ *       description = @Translation("Specifies the node for which to evaluate the condition."),
+ *       assignment_restriction = "selector"
  *     ),
  *   }
  * )

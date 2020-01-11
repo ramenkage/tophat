@@ -6,7 +6,7 @@ core: 8.x
 dependencies:
   - select2:select2
 
-# Information added by Drupal.org packaging script on 2019-12-10
-version: '8.x-1.5'
+# Information added by Drupal.org packaging script on 2020-01-08
+version: '8.x-1.6'
 project: 'select2'
-datestamp: 1575980290
+datestamp: 1578484994
