@@ -63,7 +63,7 @@ abstract class RulesKernelTestBase extends KernelTestBase {
    *
    * @var array
    */
-  public static $modules = [
+  protected static $modules = [
     'rules',
     'rules_test',
     'system',
@@ -124,6 +124,20 @@ abstract class RulesKernelTestBase extends KernelTestBase {
     // Test that the action has logged something.
     $logs = $this->debugLog->getLogs();
     $this->assertEquals($logs[$log_item_index]['message'], $message);
+  }
+
+  /**
+   * Checks if particular message is NOT in the log.
+   *
+   * @param string $message
+   *   Log message.
+   */
+  protected function assertRulesDebugLogEntryNotExists($message) {
+    // Check each log entry.
+    $logs = $this->debugLog->getLogs();
+    foreach ($logs as $log) {
+      $this->assertNotEquals($log['message'], $message);
+    }
   }
 
 }

@@ -85,7 +85,7 @@ class DataFilterTest extends EntityKernelTestBase {
 
     $fails = $filter->validateArguments($data->getDataDefinition(), []);
     $this->assertEquals(1, count($fails));
-    $this->assertContains('Missing arguments', (string) $fails[0]);
+    $this->assertStringContainsString('Missing arguments', (string) $fails[0]);
     $fails = $filter->validateArguments($data->getDataDefinition(), [new \stdClass()]);
     $this->assertEquals(1, count($fails));
     $this->assertEquals('This value should be of the correct primitive type.', $fails[0]);

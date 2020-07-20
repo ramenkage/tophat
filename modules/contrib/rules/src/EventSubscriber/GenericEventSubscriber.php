@@ -18,7 +18,7 @@ use Symfony\Component\EventDispatcher\GenericEvent;
 class GenericEventSubscriber implements EventSubscriberInterface {
 
   /**
-   * The entity manager used for loading reaction rule config entities.
+   * The entity type manager used for loading reaction rule config entities.
    *
    * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
@@ -110,6 +110,8 @@ class GenericEventSubscriber implements EventSubscriberInterface {
     if (is_subclass_of($handler_class, RulesConfigurableEventHandlerInterface::class)) {
       $qualified_event_suffixes = $handler_class::determineQualifiedEvents($event, $event_name, $event_definition);
       foreach ($qualified_event_suffixes as $qualified_event_suffix) {
+        // This is where we add the bundle-specific event suffix, e.g.
+        // rules_entity_insert:node--page if the content entity was type 'page'.
         $triggered_events[] = "$event_name--$qualified_event_suffix";
       }
     }
@@ -117,7 +119,7 @@ class GenericEventSubscriber implements EventSubscriberInterface {
     // Setup the execution state.
     $state = ExecutionState::create();
     foreach ($event_definition['context_definitions'] as $context_name => $context_definition) {
-      // If this is a GenericEvent get the context for the rule from the event
+      // If this is a GenericEvent, get the context for the rule from the event
       // arguments.
       if ($event instanceof GenericEvent) {
         $value = $event->getArgument($context_name);

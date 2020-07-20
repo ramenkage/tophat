@@ -14,7 +14,7 @@ class UiPageTest extends RulesBrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['rules', 'rules_test'];
+  protected static $modules = ['rules', 'rules_test'];
 
   /**
    * We use the minimal profile because we want to test local action links.
@@ -37,7 +37,7 @@ class UiPageTest extends RulesBrowserTestBase {
     $assert->statusCodeEquals(200);
 
     // Test that there is an empty reaction rule listing.
-    $assert->pageTextContains('There are no reaction rules yet.');
+    $assert->pageTextContains('There are no enabled reaction rules.');
   }
 
   /**
@@ -74,6 +74,26 @@ class UiPageTest extends RulesBrowserTestBase {
 
     $this->pressButton('Save');
     $assert->pageTextContains('Reaction rule Test rule has been updated. ');
+  }
+
+  /**
+   * Tests that enabling and disabling a rule works.
+   */
+  public function testRuleStatusOperations() {
+    // Setup an active rule.
+    $this->testCreateReactionRule();
+    $this->drupalGet('admin/config/workflow/rules');
+
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
+    // Test disabling.
+    $this->clickLink('Disable');
+    $assert->pageTextContains('The reaction rule Test rule has been disabled.');
+
+    // Test enabling.
+    $this->clickLink('Enable');
+    $assert->pageTextContains('The reaction rule Test rule has been enabled.');
   }
 
   /**

@@ -18,7 +18,7 @@ class ConfigurableEventHandlerTest extends RulesKernelTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['rules', 'system', 'node', 'field', 'user'];
+  protected static $modules = ['rules', 'system', 'node', 'field', 'user'];
 
   /**
    * The entity storage for Rules config entities.
@@ -52,6 +52,7 @@ class ConfigurableEventHandlerTest extends RulesKernelTestBase {
       ->create(['type' => 'page'])
       ->save();
 
+    // Create a field "field_integer".
     FieldStorageConfig::create([
       'field_name' => 'field_integer',
       'type' => 'integer',
@@ -64,6 +65,7 @@ class ConfigurableEventHandlerTest extends RulesKernelTestBase {
       'bundle' => 'page',
     ])->save();
 
+    // Create a "page" node bundle (aka content type) with field_integer.
     $this->node = $entity_type_manager->getStorage('node')
       ->create([
         'title' => 'test',
