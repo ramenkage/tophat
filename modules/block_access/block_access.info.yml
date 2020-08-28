@@ -1,0 +1,13 @@
+name: 'Block access'
+description: 'Adds additional permissions for managing block content.'
+type: module
+# core: '8.x'
+dependencies:
+  - block_content
+  - block
+
+# Information added by Drupal.org packaging script on 2017-08-16
+version: '8.x-1.0-alpha1'
+core: '8.x'
+project: 'block_access'
+datestamp: 1502918345
