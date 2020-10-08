@@ -31,7 +31,7 @@
         "drupal/droogle": "^2.2.0",
         "drupal/media_entity_googledocs": "^4.0.0",
         "drupal/publishcontent": "^1.0.0",
-        "drupal/rules": "3.x-dev",
+        "drupal/rules": "^3.0",
         "drupal/rules_api_post": "1.x-dev",
         "drupal/rules_http_client": "^1.0",
         "drupal/select2": "^1.5",

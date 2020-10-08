@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5e4facd5ab1ba7b1fa82438f7dc42172",
+    "content-hash": "5763682a6af43a925d7464f703ef7e82",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -1716,7 +1716,7 @@
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/rules.git",
-                "reference": "e1dc309a6ad612594a2e4da747f68dd2f1adfff2"
+                "reference": "1dcc2389d0bf30f521828e5d31959b1a794cb984"
             },
             "require": {
                 "drupal/core": "^8.8.2 || ^9",
@@ -1732,7 +1732,7 @@
                 },
                 "drupal": {
                     "version": "8.x-3.x-dev",
-                    "datestamp": "1597019433",
+                    "datestamp": "1598759113",
                     "security-coverage": {
                         "status": "not-covered",
                         "message": "Dev releases are not covered by Drupal security advisories."
@@ -1768,7 +1768,7 @@
                 "source": "https://git.drupalcode.org/project/rules",
                 "issues": "https://www.drupal.org/project/issues/rules"
             },
-            "time": "2020-08-15T18:30:57+00:00"
+            "time": "2020-08-30T03:43:58+00:00"
         },
         {
             "name": "drupal/rules_api_post",
@@ -5859,7 +5859,6 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "drupal/rules": 20,
         "drupal/rules_api_post": 20,
         "drupal/tr_rulez": 20
     },
