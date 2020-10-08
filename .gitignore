@@ -43,3 +43,6 @@ sites/simpletest
 
 # Ignore Squidix error log
 error_log
+
+# Ignore .htaccess because Squidix is stupid and adds junk to it
+.htaccess
