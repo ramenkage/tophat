@@ -1,0 +1,13 @@
+puzzlehunt.add_solver:
+  path: '/puzzle/{node}/add_solver'
+  defaults:
+    _controller: '\Drupal\puzzlehunt\Controller\PuzzleNodeLinksController::addSolver'
+  requirements:
+    _permission: 'access content'
+
+puzzlehunt.remove_solver:
+  path: '/puzzle/{node}/remove_solver'
+  defaults:
+    _controller: '\Drupal\puzzlehunt\Controller\PuzzleNodeLinksController::removeSolver'
+  requirements:
+    _permission: 'access content'
