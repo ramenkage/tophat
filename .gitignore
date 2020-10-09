@@ -51,3 +51,6 @@ error_log
 
 # Ignore .htaccess because Squidix is stupid and adds junk to it
 .htaccess
+
+# Ignore VSCode workspace settings
+.vscode
