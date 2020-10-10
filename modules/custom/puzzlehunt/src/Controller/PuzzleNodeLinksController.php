@@ -29,8 +29,8 @@ class PuzzleNodeLinksController extends ControllerBase {
 
     $userId = $this->currentUser()->id();
 
-    $existingUsers = array_column($node->field_current_solvers->getValue(), 'target_id');
-    if (!in_array($userId, $existingUsers)) {
+    $currentSolvers = array_column($node->field_current_solvers->getValue(), 'target_id');
+    if (!in_array($userId, $currentSolvers)) {
       $node->field_current_solvers[] = $userId;
       $output .= $this->t('Adding user @userId to current solvers.', ['@userId' => $this->currentUser()->id()]);
     }
@@ -50,9 +50,9 @@ class PuzzleNodeLinksController extends ControllerBase {
     $output = "";
     $userId = $this->currentUser()->id();
 
-    $existingUsers = array_column($node->field_current_solvers->getValue(), 'target_id');
-    if (in_array($userId, $existingUsers)) {
-      $key = array_search($userId, $existingUsers);
+    $currentSolvers = array_column($node->field_current_solvers->getValue(), 'target_id');
+    if (in_array($userId, $currentSolvers)) {
+      $key = array_search($userId, $currentSolvers);
       $node->field_current_solvers->removeItem($key);
       $output .= $this->t('Removing user @userId from current solvers.', ['@userId' => $this->currentUser()->id()]);
 

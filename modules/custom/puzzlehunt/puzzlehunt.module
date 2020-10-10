@@ -13,10 +13,16 @@ use Drupal\Core\Url;
  * Implements hook_entity_presave().
  */
 function puzzlehunt_entity_presave(Drupal\Core\Entity\EntityInterface $entity) {
-/*  if ($entity instanceof ContentEntityInterface && $entity->isTranslatable()) {
-    $route_match = \Drupal::routeMatch();
-    \Drupal::service('content_translation.synchronizer')->synchronizeFields($entity, $entity->language()->getId(), $route_match->getParameter('source_langcode'));
-  }*/
+  switch ($entity->bundle()) {
+    case 'puzzle':
+      $currentSolvers = array_column($entity->field_current_solvers->getValue(), 'target_id');
+      $historicalSolvers = array_column($entity->field_historical_solvers->getValue(), 'target_id');
+      $newSolvers = array_diff($currentSolvers, $historicalSolvers);
+      foreach($newSolvers as $newSolver) {
+        $entity->field_historical_solvers[] = $newSolver;
+      }
+      break;
+  }
 }
 
 /**
@@ -30,10 +36,10 @@ function puzzlehunt_entity_operation(EntityInterface $entity) {
   $nodeType = $entity->bundle();
   $nodeId = $entity->id();
   $userId = \Drupal::currentUser()->id();
-  $existingUsers = array_column($entity->field_current_solvers->getValue(), 'target_id');
+  $currentSolvers = array_column($entity->field_current_solvers->getValue(), 'target_id');
 
   if ($nodeType == 'puzzle') {
-    if (!in_array($userId, $existingUsers)) {
+    if (!in_array($userId, $currentSolvers)) {
       $operations['add_solver'] = [
         'title' => t('Start Working'),
         'url' => Url::fromRoute('puzzlehunt.add_solver', ['node' => $nodeId]),
