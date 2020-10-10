@@ -39,11 +39,7 @@ class PuzzleNodeLinksController extends ControllerBase {
     }
 
     $node->save();
-
-    $build = [
-      '#markup' => $output,
-    ];
-    return $build;
+    return $this->redirect('<front>');
   }
 
   /**
@@ -65,11 +61,7 @@ class PuzzleNodeLinksController extends ControllerBase {
     }
 
     $node->save();
-
-    $build = [
-      '#markup' => $output,
-    ];
-    return $build;
+    return $this->redirect('<front>');
   }
 
 }
