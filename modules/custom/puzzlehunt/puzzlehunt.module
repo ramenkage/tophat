@@ -27,17 +27,27 @@ function puzzlehunt_entity_operation(EntityInterface $entity) {
     return;
   }
 
-  $operations['add_solver'] = [
-    'title' => t('Start Working'),
-    'url' => Url::fromRoute('puzzlehunt.add_solver', ['node' => $entity->id()]),
-    'weight' => 0,
-  ];
+  $nodeType = $entity->bundle();
+  $nodeId = $entity->id();
+  $userId = \Drupal::currentUser()->id();
+  $existingUsers = array_column($entity->field_current_solvers->getValue(), 'target_id');
 
-  $operations['remove_solver'] = [
-    'title' => t('Stop Working'),
-    'url' => Url::fromRoute('puzzlehunt.remove_solver', ['node' => $entity->id()]),
-    'weight' => 1,
-  ];
+  if ($nodeType == 'puzzle') {
+    if (!in_array($userId, $existingUsers)) {
+      $operations['add_solver'] = [
+        'title' => t('Start Working'),
+        'url' => Url::fromRoute('puzzlehunt.add_solver', ['node' => $nodeId]),
+        'weight' => 0,
+      ];
+    }
+    else {
+      $operations['remove_solver'] = [
+        'title' => t('Stop Working'),
+        'url' => Url::fromRoute('puzzlehunt.remove_solver', ['node' => $nodeId]),
+        'weight' => 1,
+      ];
+    }
+  }
 
   return $operations;
 }

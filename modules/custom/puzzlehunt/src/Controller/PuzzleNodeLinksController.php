@@ -27,15 +27,15 @@ class PuzzleNodeLinksController extends ControllerBase {
       $output .= $this->t('Status was not New, so not changing.');
     }
 
-    $uid = $this->currentUser()->id();
+    $userId = $this->currentUser()->id();
 
-    $existing_uids = array_column($node->field_current_solvers->getValue(), 'target_id');
-    if (!in_array($uid, $existing_uids)) {
-      $node->field_current_solvers[] = $uid;
-      $output .= $this->t('Adding user @uid to current solvers.', ['@uid' => $this->currentUser()->id()]);
+    $existingUsers = array_column($node->field_current_solvers->getValue(), 'target_id');
+    if (!in_array($userId, $existingUsers)) {
+      $node->field_current_solvers[] = $userId;
+      $output .= $this->t('Adding user @userId to current solvers.', ['@userId' => $this->currentUser()->id()]);
     }
     else {
-      $output .= $this->t('User @uid is already a current solver.', ['@uid' => $this->currentUser()->id()]);
+      $output .= $this->t('User @userId is already a current solver.', ['@userId' => $this->currentUser()->id()]);
     }
 
     $node->save();
@@ -52,16 +52,16 @@ class PuzzleNodeLinksController extends ControllerBase {
   public function removeSolver(Node $node) {
 
     $output = "";
-    $uid = $this->currentUser()->id();
+    $userId = $this->currentUser()->id();
 
-    $existing_uids = array_column($node->field_current_solvers->getValue(), 'target_id');
-    if (in_array($uid, $existing_uids)) {
-      $key = array_search($uid, $existing_uids);
+    $existingUsers = array_column($node->field_current_solvers->getValue(), 'target_id');
+    if (in_array($userId, $existingUsers)) {
+      $key = array_search($userId, $existingUsers);
       $node->field_current_solvers->removeItem($key);
-      $output .= $this->t('Removing user @uid from current solvers.', ['@uid' => $this->currentUser()->id()]);
+      $output .= $this->t('Removing user @userId from current solvers.', ['@userId' => $this->currentUser()->id()]);
     }
     else {
-      $output .= $this->t('User @uid is not a current solver.', ['@uid' => $this->currentUser()->id()]);
+      $output .= $this->t('User @userId is not a current solver.', ['@userId' => $this->currentUser()->id()]);
     }
 
     $node->save();
