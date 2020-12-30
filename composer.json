@@ -21,12 +21,12 @@
     },
     "require": {
         "php": "^5.5.9|>=7.0.8",
-        "composer/installers": "^1.2.0",
+        "composer/installers": "^1.9.0",
         "cweagans/composer-patches": "^1.6.5",
-        "drupal-composer/drupal-scaffold": "^2.5.4",
         "drupal/backup_migrate": "^5.0",
         "drupal/block_access": "^1.0@beta",
-        "drupal/core": "^8.6.5",
+        "drupal/core-composer-scaffold": "^8.9",
+        "drupal/core-recommended": "^8.9",
         "drupal/css_editor": "^1.2.0",
         "drupal/devel": "^4.0",
         "drupal/draggableviews": "^2.0",
@@ -39,17 +39,14 @@
         "drupal/slack": "^1.2.0",
         "drupal/token": "^1.6",
         "drupal/tr_rulez": "1.x-dev",
-        "drupal/upgrade_status": "^2.10",
+        "drupal/upgrade_status": "^3.0",
         "drupal/views_bulk_edit": "^2.4.0",
         "drupal/views_bulk_operations": "^3.3.0",
         "drupal/views_collapsible_list": "^1.2.0",
         "drupal/views_conditional": "^1.0.0",
         "drupal/views_field_view": "^1.0.0-beta2",
         "drush/drush": "^10.3",
-        "grasmash/drupal-security-warning": "^1.0.0",
-        "npm-asset/select2": "^4.0",
-        "oomphinc/composer-installers-extender": "^1.1",
-        "wikimedia/composer-merge-plugin": "^1.4.1"
+        "npm-asset/select2": "^4.0"
     },
     "require-dev": {},
     "config": {
@@ -108,6 +105,11 @@
             ],
             "replace": false,
             "ignore-duplicates": true
+        },
+        "drupal-scaffold": {
+            "locations": {
+              "web-root": "."
+            }
         }
     },
     "minimum-stability": "dev",
