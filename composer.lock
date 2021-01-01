@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "045f4f42de58e6d70fcb5b349af338e5",
+    "content-hash": "38b30248f373c882d622b43597972b96",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -2535,6 +2535,66 @@
             }
         },
         {
+            "name": "drupal/empty_fields",
+            "version": "1.0.0-beta1",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/empty_fields.git",
+                "reference": "8.x-1.0-beta1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/empty_fields-8.x-1.0-beta1.zip",
+                "reference": "8.x-1.0-beta1",
+                "shasum": "80b187e92dc4d6bf5c7336954e7d7dbd459afa0a"
+            },
+            "require": {
+                "drupal/core": "^8.7.7 || ^9"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "8.x-1.0-beta1",
+                    "datestamp": "1590178663",
+                    "security-coverage": {
+                        "status": "not-covered",
+                        "message": "Beta releases are not covered by Drupal security advisories."
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Alan D.",
+                    "homepage": "https://www.drupal.org/user/198838"
+                },
+                {
+                    "name": "andypost",
+                    "homepage": "https://www.drupal.org/user/118908"
+                },
+                {
+                    "name": "geek-merlin",
+                    "homepage": "https://www.drupal.org/user/229048"
+                },
+                {
+                    "name": "mstrelan",
+                    "homepage": "https://www.drupal.org/user/314289"
+                },
+                {
+                    "name": "rypit",
+                    "homepage": "https://www.drupal.org/user/868380"
+                }
+            ],
+            "description": "Provides options for displaying empty fields.",
+            "homepage": "https://www.drupal.org/project/empty_fields",
+            "support": {
+                "source": "https://git.drupalcode.org/project/empty_fields"
+            }
+        },
+        {
             "name": "drupal/google_api_client",
             "version": "3.0.0-rc4",
             "source": {
@@ -2582,6 +2642,62 @@
             "homepage": "https://www.drupal.org/project/google_api_client",
             "support": {
                 "source": "https://git.drupalcode.org/project/google_api_client"
+            }
+        },
+        {
+            "name": "drupal/jeditable",
+            "version": "1.0.0-alpha2",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/jeditable.git",
+                "reference": "8.x-1.0-alpha2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/jeditable-8.x-1.0-alpha2.zip",
+                "reference": "8.x-1.0-alpha2",
+                "shasum": "f0e0c8c450a1a7238a957e005fe6d217940a5f5f"
+            },
+            "require": {
+                "drupal/core": "^8"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "8.x-1.0-alpha2",
+                    "datestamp": "1549678980",
+                    "security-coverage": {
+                        "status": "not-covered",
+                        "message": "Project has not opted into security advisory coverage!"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Dave.Ingram",
+                    "homepage": "https://www.drupal.org/user/352282"
+                },
+                {
+                    "name": "Murz",
+                    "homepage": "https://www.drupal.org/user/157092"
+                },
+                {
+                    "name": "kevin.mcnamee@mailbox.org",
+                    "homepage": "https://www.drupal.org/user/27480"
+                },
+                {
+                    "name": "nehajyoti",
+                    "homepage": "https://www.drupal.org/user/2804915"
+                }
+            ],
+            "description": "Provides methods and field formatters for using the jEditable edit-in-place plugin",
+            "homepage": "https://www.drupal.org/project/jeditable",
+            "support": {
+                "source": "https://git.drupalcode.org/project/jeditable"
             }
         },
         {
@@ -9314,6 +9430,8 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "drupal/block_access": 10,
+        "drupal/empty_fields": 10,
+        "drupal/jeditable": 15,
         "drupal/tr_rulez": 20
     },
     "prefer-stable": true,
