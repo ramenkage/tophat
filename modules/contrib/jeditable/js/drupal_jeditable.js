@@ -11,7 +11,8 @@
                 tooltip     : 'Click to edit...',
                 cancel      : 'Cancel',
                 submit      : 'Save',
-                placeholder : '&nbsp;'
+                placeholder : '&nbsp;',
+                callback    : function () { location.reload(); }
             });
         }
     };

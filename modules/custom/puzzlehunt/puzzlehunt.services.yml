@@ -1,0 +1,5 @@
+services:
+  puzzlehunt.route_subscriber:
+    class: Drupal\puzzlehunt\Routing\RouteSubscriber
+    tags:
+      - { name: event_subscriber }
