@@ -1,0 +1,55 @@
+fieldset:not(.fieldgroup).edit-in-place-clickable {
+  padding: 0;
+  margin: 0;
+  border: none;
+}
+
+fieldset:not(.fieldgroup).edit-in-place-clickable legend {
+ display: none;
+}
+
+fieldset:not(.fieldgroup).edit-in-place-clickable legend + .fieldset-wrapper {
+  cursor: pointer;
+  background: right no-repeat url(/core/themes/stable/images/core/icons/bebebe/pencil.svg);
+  padding-right: 20px;
+}
+
+fieldset:not(.fieldgroup).edit-in-place-clickable legend + .fieldset-wrapper:hover {
+  background: right no-repeat url(/core/themes/stable/images/core/icons/787878/pencil.svg);
+}
+
+fieldset:not(.edit-in-place-clickable-init) legend + .fieldset-wrapper .form-item {
+  display: inline-block;
+  margin: 0;
+  vertical-align: middle;
+}
+
+fieldset:not(.fieldgroup).edit-in-place-clickable-init  legend + .fieldset-wrapper .form-item {
+  display: none;
+}
+
+fieldset:not(.fieldgroup).edit-in-place-clickable .fieldgroup input {
+  float: right;
+}
+
+fieldset:not(.edit-in-place-clickable-init) .fieldset-wrapper .entity-label {
+  display: none;
+}
+
+fieldset:not(.fieldgroup).edit-in-place-clickable .entity-label ul {
+  margin: 0;
+  padding: 0;
+}
+
+fieldset:not(.fieldgroup).edit-in-place-clickable .entity-label ul li {
+  list-style: none;
+}
+
+fieldset:not(.fieldgroup).edit-in-place-clickable .entity-label .edit-in-place--group:not(.last-group) {
+  border-bottom: 1px dashed;
+}
+
+.form-type-edit-in-place-select .form-select.edit-in-place,
+.form-type-edit-in-place-select .chosen-container {
+  max-width: 500px;
+}
