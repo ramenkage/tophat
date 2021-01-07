@@ -14,13 +14,88 @@ use Drupal\Core\Url;
  */
 function puzzlehunt_entity_presave(Drupal\Core\Entity\EntityInterface $entity) {
   switch ($entity->bundle()) {
+    case 'round':
+      // Create a Google Drive folder if necessary
+      if ($entity->field_gdrive_id->isEmpty()) {
+
+        // Get folder id from round's parent hunt
+        $folder_id = $entity->field_hunt->entity->field_gdrive_id->value;
+
+        // Load the Google api service
+        $google_api_client = \Drupal::entityTypeManager()->getStorage('google_api_client')->load(1);
+        $googleService = \Drupal::service('google_api_client.client');
+        $googleService->setGoogleApiClient($google_api_client);
+
+        try {
+          // Get a Google Drive files service
+          $files = $googleService->getServiceObjects()['drive']->files;
+
+          // Set the parameters for the new folder
+          $newFolder = new Google_Service_Drive_DriveFile();
+          $newFolder->setName($entity->title->value);
+          $newFolder->setParents([$folder_id]);
+          $newFolder->setMimeType('application/vnd.google-apps.folder');
+
+          // Submit the create request
+          $response = $files->create($newFolder);
+
+          // Set round's gdrive_id field to id of new folder
+          $entity->field_gdrive_id = $response->id;
+        } catch (Exception $e) {
+          \Drupal::logger('my_module')->error('Exception while creating folder for round @nid: @emsg', [
+            '@nid' => $entity->id,
+            '@emsg' => $e->getMessage(),
+          ]);
+        }
+      }
+
+      break;
     case 'puzzle':
+      // Add current solvers to historical solvers.
       $currentSolvers = array_column($entity->field_current_solvers->getValue(), 'target_id');
       $historicalSolvers = array_column($entity->field_historical_solvers->getValue(), 'target_id');
       $newSolvers = array_diff($currentSolvers, $historicalSolvers);
       foreach($newSolvers as $newSolver) {
         $entity->field_historical_solvers[] = $newSolver;
       }
+
+      // Create a Google Sheets file if necessary
+      if ($entity->field_gdrive_id->isEmpty()) {
+
+        // Specify spreadsheet to use as template
+        $origin_file_id = '1v9wd_l7W0KxmE3CZpTcLlRF7STU1O14V_Zra0gXLSe4';
+
+        // Get folder id from puzzle's parent round
+        $folder_id = $entity->field_round->entity->field_gdrive_id->value;
+
+        // Load the Google api service
+        $google_api_client = \Drupal::entityTypeManager()->getStorage('google_api_client')->load(1);
+        $googleService = \Drupal::service('google_api_client.client');
+        $googleService->setGoogleApiClient($google_api_client);
+
+        try {
+          // Get a Google Drive files service
+          $files = $googleService->getServiceObjects()['drive']->files;
+
+          // Set the parameters for the new file
+          $copiedFile = new Google_Service_Drive_DriveFile();
+          $copiedFile->setName($entity->title->value);
+          $copiedFile->setParents([$folder_id]);
+
+          // Submit the copy request
+          $response = $files->copy($origin_file_id, $copiedFile);
+
+          // Set puzzle's gdrive_id field to id of new file
+          $entity->field_gdrive_id = $response->id;
+
+        } catch (Exception $e) {
+          \Drupal::logger('my_module')->error('Exception while creating spreadsheet for puzzle @nid: @emsg', [
+            '@nid' => $entity->id,
+            '@emsg' => $e->getMessage(),
+          ]);
+        }
+      }
+
       break;
   }
 }
