@@ -109,11 +109,12 @@ function puzzlehunt_entity_operation(EntityInterface $entity) {
   }
 
   $nodeType = $entity->bundle();
-  $nodeId = $entity->id();
-  $userId = \Drupal::currentUser()->id();
-  $currentSolvers = array_column($entity->field_current_solvers->getValue(), 'target_id');
 
   if ($nodeType == 'puzzle') {
+    $nodeId = $entity->id();
+    $userId = \Drupal::currentUser()->id();
+    $currentSolvers = array_column($entity->field_current_solvers->getValue(), 'target_id');
+
     if (!in_array($userId, $currentSolvers)) {
       $operations['add_solver'] = [
         'title' => t('Start Working'),
