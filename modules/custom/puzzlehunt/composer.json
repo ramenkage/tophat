@@ -1,0 +1,16 @@
+{
+    "name": "drupal/puzzlehunt",
+    "description": "Puzzle tracking tool for teams competing in puzzle hunts",
+    "type": "drupal-custom-module",
+    "require": {
+        "symfony/http-client": "^5.2",
+        "nyholm/psr7": "^1.3",
+        "jolicode/slack-php-api": "^4.0"
+    },
+    "authors": [
+        {
+            "name": "Yoni Gray",
+            "email": "ramenkage@gmail.com"
+        }
+    ]
+}

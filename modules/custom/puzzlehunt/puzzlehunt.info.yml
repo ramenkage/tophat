@@ -1,5 +1,4 @@
 name: 'Puzzle Hunt Tracker'
 type: module
 description: 'Puzzle tracking tool for teams competing in puzzle hunts'
-core: 8.x
-core_version_requirement: '^8 || ^9'
+core_version_requirement: '^9'

@@ -17,6 +17,10 @@
         "asset-packagist": {
             "type": "composer",
             "url": "https://asset-packagist.org"
+        },
+        "puzzlehunt": {
+            "type": "path",
+            "url": "modules/custom/puzzlehunt"
         }
     },
     "require": {
@@ -38,6 +42,7 @@
         "drupal/google_api_client": "^3.0@RC",
         "drupal/linked_field": "^1.3",
         "drupal/module_builder": "^3.13",
+        "drupal/puzzlehunt": "dev-master",
         "drupal/rules": "^3.0",
         "drupal/select2": "^1.5",
         "drupal/slack": "^1.2.0",
