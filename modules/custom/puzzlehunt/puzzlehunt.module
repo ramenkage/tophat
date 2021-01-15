@@ -5,14 +5,17 @@
  * Contains hook implementations for the Puzzle Hunt Tracker module.
  */
 
-use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Url;
+use JoliCode\Slack\ClientFactory;
+use JoliCode\Slack\Exception\SlackErrorResponse;
+
+const SLACK_TOKEN = 'xoxb-523203596567-902815353813-KPBjkjCUCF1M5eWW9Tb3rshR';
 
 /**
  * Implements hook_entity_presave().
  */
-function puzzlehunt_entity_presave(Drupal\Core\Entity\EntityInterface $entity) {
+function puzzlehunt_entity_presave(EntityInterface $entity) {
   switch ($entity->bundle()) {
     case 'round':
       // Create a Google Drive folder if necessary
@@ -42,7 +45,8 @@ function puzzlehunt_entity_presave(Drupal\Core\Entity\EntityInterface $entity) {
           // Set round's gdrive_id field to id of new folder
           $entity->field_gdrive_id = $response->id;
         } catch (Exception $e) {
-          \Drupal::logger('my_module')->error('Exception while creating folder for round @nid: @emsg', [
+          \Drupal::logger('puzzlehunt')->error('Exception while creating folder for round @title (@nid): @emsg', [
+            '@title' => $entity->title->value,
             '@nid' => $entity->id,
             '@emsg' => $e->getMessage(),
           ]);
@@ -89,7 +93,35 @@ function puzzlehunt_entity_presave(Drupal\Core\Entity\EntityInterface $entity) {
           $entity->field_gdrive_id = $response->id;
 
         } catch (Exception $e) {
-          \Drupal::logger('my_module')->error('Exception while creating spreadsheet for puzzle @nid: @emsg', [
+          \Drupal::logger('puzzlehunt')->error('Exception while creating spreadsheet for puzzle @title (@nid): @emsg', [
+            '@title' => $entity->title->value,
+            '@nid' => $entity->id,
+            '@emsg' => $e->getMessage(),
+          ]);
+        }
+      }
+
+      if ($entity->field_slack_channel->isEmpty()) {
+        /** @var Client $slack_client */
+        $slack_client = ClientFactory::create(SLACK_TOKEN);
+
+        // Enforce channel name constraints
+        // "Channel names may only contain lowercase letters, numbers, hyphens, and underscores, and must be 80 characters or less."
+        $channel_name = substr('p-' . preg_replace('/[^a-z0-9]/', '', strtolower($entity->title->value)), 0, 80);
+
+        try {
+          // Create a Slack channel
+          $response = $slack_client->conversationsCreate([
+            'name' => $channel_name,
+          ]);
+
+          // Set field to new channel name
+          $entity->field_slack_channel = $response->getChannel()->getName();
+
+        } catch (SlackErrorResponse $e) {
+          \Drupal::logger('puzzlehunt')->error('Exception while creating Slack channel @channel_name for puzzle @title (@nid): @emsg', [
+            '@channel_name' => $channel_name,
+            '@title' => $entity->title->value,
             '@nid' => $entity->id,
             '@emsg' => $e->getMessage(),
           ]);
@@ -99,6 +131,100 @@ function puzzlehunt_entity_presave(Drupal\Core\Entity\EntityInterface $entity) {
       break;
   }
 }
+
+/**
+ * Implements hook_entity_insert().
+ */
+function puzzlehunt_entity_insert(EntityInterface $entity)
+{
+  switch ($entity->bundle()) {
+    case 'round':
+      dpm($entity);
+      // Send a "New Round" message to Slack
+      /** @var Client $slack_client */
+      $slack_client = ClientFactory::create(SLACK_TOKEN);
+
+      try {
+        $message = 'New Round! - ' . $entity->title->value;
+        $response = $slack_client->chatPostMessage([
+          'channel' => 'bottesting',
+          'text' => $message,
+        ]);
+      } catch (SlackErrorResponse $e) {
+        \Drupal::logger('puzzlehunt')->error('Exception while Slacking new round @title (@nid): @emsg', [
+          '@title' => $entity->title->value,
+          '@nid' => $entity->id,
+          '@emsg' => $e->getMessage(),
+        ]);
+      }
+      break;
+    case 'puzzle':
+      // Send a "New Puzzle" message to Slack
+      /** @var Client $slack_client */
+      $slack_client = ClientFactory::create(SLACK_TOKEN);
+
+      try {
+        $title = $entity->title->value;
+        $round_title = $entity->field_round->entity->title->value;
+        $puzzle_type = $entity->field_puzzle_type->value;
+
+        $message = 'New Puzzle! - ' . $title . ' in ' . $round_title;
+        if (!empty($puzzle_type)) {
+          $message .= ' (' . $puzzle_type . ')';
+        }
+
+        $response = $slack_client->chatPostMessage([
+          'channel' => 'bottesting',
+          'text' => $message,
+        ]);
+      } catch (SlackErrorResponse $e) {
+        \Drupal::logger('puzzlehunt')->error('Exception while Slacking new puzzle @title (@nid): @emsg', [
+          '@title' => $entity->title->value,
+          '@nid' => $entity->id,
+          '@emsg' => $e->getMessage(),
+        ]);
+      }
+      break;
+  }
+}
+
+/**
+ * Implements hook_entity_update().
+ */
+function puzzlehunt_entity_update(EntityInterface $entity) {
+  switch ($entity->bundle()) {
+    case 'puzzle':
+      // Status 2 = Solved.
+      if ($entity->field_status->target_id == 2 && $entity->original->field_status->target_id != 2) {
+        // Send a "Solved Puzzle" message to Slack
+        /** @var Client $slack_client */
+        $slack_client = ClientFactory::create(SLACK_TOKEN);
+
+        try {
+          $title = $entity->title->value;
+          $solution = $entity->field_solution->value;
+          $username = \Drupal::currentUser()->getDisplayName();
+
+          $message = 'Solved! - The solution for ' . $title
+                     . ' is ' . $solution
+                     . ' (submitted by ' . $username . ')';
+
+          $response = $slack_client->chatPostMessage([
+            'channel' => 'bottesting',
+            'text' => $message,
+          ]);
+        } catch (SlackErrorResponse $e) {
+          \Drupal::logger('puzzlehunt')->error('Exception while Slacking new puzzle @title (@nid): @emsg', [
+            '@title' => $entity->title->value,
+            '@nid' => $entity->id,
+            '@emsg' => $e->getMessage(),
+          ]);
+        }
+      }
+    break;
+  }
+}
+
 
 /**
  * Implements hook_entity_operation().
