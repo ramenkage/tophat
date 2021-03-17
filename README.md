@@ -7,8 +7,8 @@ is very fiddly. That said, once it's set up, it works pretty well.
 ## Installation
 Huge caveat: I have not attempted to reinstall from scratch recently. The steps
 below should theoretically work, but this code is provided as-is, and I don't
-have time to help debug. It is currently working correctly on ☃'s server, so
-rest assured it is possible to install. 👍
+have time to help debug. It is currently working correctly on &#x2603;&#xFE0E;'s
+server, so rest assured it is possible to install. 👍
 
 1. Clone this git repo.
 1. Run `composer install` in the root tophat directory. This will install
