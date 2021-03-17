@@ -10,8 +10,6 @@ use Drupal\Core\Url;
 use JoliCode\Slack\ClientFactory;
 use JoliCode\Slack\Exception\SlackErrorResponse;
 
-const SLACK_TOKEN = 'xoxb-523203596567-902815353813-KPBjkjCUCF1M5eWW9Tb3rshR';
-
 /**
  * Implements hook_entity_presave().
  */
@@ -102,8 +100,8 @@ function puzzlehunt_entity_presave(EntityInterface $entity) {
       }
 
       if ($entity->field_slack_channel->isEmpty()) {
-        /** @var Client $slack_client */
-        $slack_client = ClientFactory::create(SLACK_TOKEN);
+        $config = \Drupal::config('puzzlehunt.adminsettings');
+        $slack_client = ClientFactory::create($config->get('slack_token'));
 
         // Enforce channel name constraints
         // "Channel names may only contain lowercase letters, numbers, hyphens, and underscores, and must be 80 characters or less."
@@ -139,15 +137,14 @@ function puzzlehunt_entity_insert(EntityInterface $entity)
 {
   switch ($entity->bundle()) {
     case 'round':
-      dpm($entity);
       // Send a "New Round" message to Slack
-      /** @var Client $slack_client */
-      $slack_client = ClientFactory::create(SLACK_TOKEN);
+      $config = \Drupal::config('puzzlehunt.adminsettings');
+      $slack_client = ClientFactory::create($config->get('slack_token'));
 
       try {
         $message = 'New Round! - ' . $entity->title->value;
         $response = $slack_client->chatPostMessage([
-          'channel' => 'bottesting',
+          'channel' => $config->get('slack_channel'),
           'text' => $message,
         ]);
       } catch (SlackErrorResponse $e) {
@@ -160,8 +157,8 @@ function puzzlehunt_entity_insert(EntityInterface $entity)
       break;
     case 'puzzle':
       // Send a "New Puzzle" message to Slack
-      /** @var Client $slack_client */
-      $slack_client = ClientFactory::create(SLACK_TOKEN);
+      $config = \Drupal::config('puzzlehunt.adminsettings');
+      $slack_client = ClientFactory::create($config->get('slack_token'));
 
       try {
         $title = $entity->title->value;
@@ -174,7 +171,7 @@ function puzzlehunt_entity_insert(EntityInterface $entity)
         }
 
         $response = $slack_client->chatPostMessage([
-          'channel' => 'bottesting',
+          'channel' => $config->get('slack_channel'),
           'text' => $message,
         ]);
       } catch (SlackErrorResponse $e) {
@@ -197,8 +194,8 @@ function puzzlehunt_entity_update(EntityInterface $entity) {
       // Status 2 = Solved.
       if ($entity->field_status->target_id == 2 && $entity->original->field_status->target_id != 2) {
         // Send a "Solved Puzzle" message to Slack
-        /** @var Client $slack_client */
-        $slack_client = ClientFactory::create(SLACK_TOKEN);
+        $config = \Drupal::config('puzzlehunt.adminsettings');
+        $slack_client = ClientFactory::create($config->get('slack_token'));
 
         try {
           $title = $entity->title->value;
@@ -210,7 +207,7 @@ function puzzlehunt_entity_update(EntityInterface $entity) {
                      . ' (submitted by ' . $username . ')';
 
           $response = $slack_client->chatPostMessage([
-            'channel' => 'bottesting',
+            'channel' => $config->get('slack_channel'),
             'text' => $message,
           ]);
         } catch (SlackErrorResponse $e) {

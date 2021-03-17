@@ -1,0 +1,5 @@
+loremipsum.form:
+  title: 'Puzzle Hunt admin settings'
+  description: 'Configure settings for the Puzzle Hunt module.'
+  route_name: puzzlehunt.admin_settings_form
+  parent: 'system.admin_config_system'
