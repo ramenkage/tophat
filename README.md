@@ -1,4 +1,4 @@
-# tophat - Puzzle tracking software for Mystery Hunt team ☃
+# tophat - Puzzle tracking software for Mystery Hunt team &#x2603;&#xFE0E;
 This Drupal website tracks rounds and puzzles for collaborating on puzzle hunts.
 It is ***decidedly*** a work-in-progress. The code is messy, and way too much
 functionality is still in the configuration, so installation on a new server
