@@ -32,7 +32,7 @@ server, so rest assured it is possible to install. 👍
 1. Browse to /admin/config/system/site-information and fix your site details.
 1. Browse to /admin/config/services/google_api_client/add and add your
    credentials with service="Drive API" and
-   scope="https://www.googleapis.com/auth/drive". (It *must* have id=0 in the
+   scope="https://www.googleapis.com/auth/drive". (It *must* have id=1 in the
    list.)
 1. Browse to /admin/config/puzzlehunt and add your Slack App credentials.
 1. Adjust the Slack URLs in these Views: hunt_overview, round_list, my_puzzles
