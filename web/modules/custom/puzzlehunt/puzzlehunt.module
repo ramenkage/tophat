@@ -140,7 +140,7 @@ function puzzlehunt_entity_insert(EntityInterface $entity)
       // Send a "New Round" message to Slack
       $config = \Drupal::config('puzzlehunt.adminsettings');
       $slack_client = ClientFactory::create($config->get('slack_token'));
-      $slack_channel = $entity->field_round->entity->field_hunt->entity->field_slack_channel->value ?? $config->get('slack_channel');
+      $slack_channel = $entity->field_hunt->entity->field_slack_channel->value ?? $config->get('slack_channel');
 
       try {
         $message = 'New Round! - ' . $entity->title->value;
