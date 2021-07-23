@@ -231,6 +231,7 @@ function puzzlehunt_entity_operation(EntityInterface $entity) {
     return;
   }
 
+  $operations = array();
   $nodeType = $entity->bundle();
 
   if ($nodeType == 'puzzle') {
