@@ -52,8 +52,7 @@ class AdminSettingsForm extends ConfigFormBase {
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, FormStateInterface $form_state)
-  {
+  public function submitForm(array &$form, FormStateInterface $form_state) {
     $this->config('puzzlehunt.adminsettings')
       ->set('slack_token', $form_state->getValue('slack_token'))
       ->set('slack_channel', $form_state->getValue('slack_channel'))
