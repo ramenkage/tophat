@@ -42,7 +42,7 @@ class AdminSettingsForm extends ConfigFormBase {
     $form['slack_channel'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Slack Channel'),
-      '#description' => $this->t('The Slack channel you want the bot to post in. Do not include # (i.e., if your channel is called #botspam, enter botspam in this field).'),
+      '#description' => $this->t('The Slack channel you want the bot to post in by default. Do not include # (i.e., if your channel is called #botspam, enter botspam in this field). This can be overridden per hunt.'),
       '#default_value' => $config->get('slack_channel'),
     ];
 

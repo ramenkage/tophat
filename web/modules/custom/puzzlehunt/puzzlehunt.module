@@ -140,11 +140,12 @@ function puzzlehunt_entity_insert(EntityInterface $entity)
       // Send a "New Round" message to Slack
       $config = \Drupal::config('puzzlehunt.adminsettings');
       $slack_client = ClientFactory::create($config->get('slack_token'));
+      $slack_channel = $entity->field_round->entity->field_hunt->entity->field_slack_channel->value ?? $config->get('slack_channel');
 
       try {
         $message = 'New Round! - ' . $entity->title->value;
         $response = $slack_client->chatPostMessage([
-          'channel' => $config->get('slack_channel'),
+          'channel' => $slack_channel,
           'text' => $message,
         ]);
       } catch (SlackErrorResponse $e) {
@@ -159,6 +160,7 @@ function puzzlehunt_entity_insert(EntityInterface $entity)
       // Send a "New Puzzle" message to Slack
       $config = \Drupal::config('puzzlehunt.adminsettings');
       $slack_client = ClientFactory::create($config->get('slack_token'));
+      $slack_channel = $entity->field_round->entity->field_hunt->entity->field_slack_channel->value ?? $config->get('slack_channel');
 
       try {
         $title = $entity->title->value;
@@ -171,7 +173,7 @@ function puzzlehunt_entity_insert(EntityInterface $entity)
         }
 
         $response = $slack_client->chatPostMessage([
-          'channel' => $config->get('slack_channel'),
+          'channel' => $slack_channel,
           'text' => $message,
         ]);
       } catch (SlackErrorResponse $e) {
@@ -196,6 +198,7 @@ function puzzlehunt_entity_update(EntityInterface $entity) {
         // Send a "Solved Puzzle" message to Slack
         $config = \Drupal::config('puzzlehunt.adminsettings');
         $slack_client = ClientFactory::create($config->get('slack_token'));
+        $slack_channel = $entity->field_round->entity->field_hunt->entity->field_slack_channel->value ?? $config->get('slack_channel');
 
         try {
           $title = $entity->title->value;
@@ -207,7 +210,7 @@ function puzzlehunt_entity_update(EntityInterface $entity) {
                      . ' (submitted by ' . $username . ')';
 
           $response = $slack_client->chatPostMessage([
-            'channel' => $config->get('slack_channel'),
+            'channel' => $slack_channel,
             'text' => $message,
           ]);
         } catch (SlackErrorResponse $e) {
