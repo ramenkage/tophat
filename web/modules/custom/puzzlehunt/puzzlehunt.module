@@ -8,7 +8,6 @@
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Url;
 use JoliCode\Slack\ClientFactory;
-use JoliCode\Slack\Exception\SlackErrorResponse;
 
 /**
  * Implements hook_entity_presave().
@@ -116,7 +115,7 @@ function puzzlehunt_entity_presave(EntityInterface $entity) {
           // Set field to new channel name
           $entity->field_slack_channel = $response->getChannel()->getName();
 
-        } catch (SlackErrorResponse $e) {
+        } catch (Exception $e) {
           \Drupal::logger('puzzlehunt')->error('Exception while creating Slack channel @channel_name for puzzle @title (@nid): @emsg', [
             '@channel_name' => $channel_name,
             '@title' => $entity->title->value,
@@ -148,7 +147,7 @@ function puzzlehunt_entity_insert(EntityInterface $entity)
           'channel' => $slack_channel,
           'text' => $message,
         ]);
-      } catch (SlackErrorResponse $e) {
+      } catch (Exception $e) {
         \Drupal::logger('puzzlehunt')->error('Exception while Slacking new round @title (@nid): @emsg', [
           '@title' => $entity->title->value,
           '@nid' => $entity->id,
@@ -176,7 +175,7 @@ function puzzlehunt_entity_insert(EntityInterface $entity)
           'channel' => $slack_channel,
           'text' => $message,
         ]);
-      } catch (SlackErrorResponse $e) {
+      } catch (Exception $e) {
         \Drupal::logger('puzzlehunt')->error('Exception while Slacking new puzzle @title (@nid): @emsg', [
           '@title' => $entity->title->value,
           '@nid' => $entity->id,
@@ -213,7 +212,7 @@ function puzzlehunt_entity_update(EntityInterface $entity) {
             'channel' => $slack_channel,
             'text' => $message,
           ]);
-        } catch (SlackErrorResponse $e) {
+        } catch (Exception $e) {
           \Drupal::logger('puzzlehunt')->error('Exception while Slacking new puzzle @title (@nid): @emsg', [
             '@title' => $entity->title->value,
             '@nid' => $entity->id,
