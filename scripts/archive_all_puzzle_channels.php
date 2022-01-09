@@ -11,7 +11,10 @@ use JoliCode\Slack\ClientFactory;
 
 $config = \Drupal::config('puzzlehunt.adminsettings');
 $slack_client = ClientFactory::create($config->get('slack_token'));
-$channels = $slack_client->conversationsList(['exclude_archived' => TRUE, 'limit' => 1000])->getChannels();
+$channels = $slack_client->conversationsList([
+  'exclude_archived' => TRUE,
+  'limit' => 1000,
+])->getChannels();
 foreach ($channels as $channel) {
   $channel_id = $channel->getId();
   $channel_name = $channel->getName();
