@@ -58,7 +58,8 @@
         "drupal/views_field_view": "^1.0.0-beta2",
         "drush/drush": "^11.0",
         "kint-php/kint": "^3.3",
-        "npm-asset/select2": "^4.0"
+        "npm-asset/select2": "^4.0",
+        "oomphinc/composer-installers-extender": "^2.0"
     },
     "config": {
         "sort-packages": true,
@@ -69,7 +70,8 @@
             "drupal/console-extend-plugin": true,
             "cweagans/composer-patches": true,
             "drupal/core-composer-scaffold": true,
-            "drupal/core-project-message": true
+            "drupal/core-project-message": true,
+            "oomphinc/composer-installers-extender": true
         }
     },
     "conflict": {
