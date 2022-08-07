@@ -16,15 +16,18 @@ class PuzzleNodeLinksController extends ControllerBase {
   public function addSolver(Node $node) {
 
     $output = "";
-    $current_status = $node->field_status->target_id;
 
-    // Status 1 = New, 3 = Working, 5 = Abandoned.
-    if ($current_status == 1 || $current_status == 5) {
-      $node->field_status = 3;
-      $output .= $this->t('Changing status to Working.');
-    }
-    else {
-      $output .= $this->t('Status was not New or Abandoned, so not changing.');
+    if ($node->bundle() == 'puzzle') {
+      $current_status = $node->field_status->target_id;
+
+      // Status 1 = New, 3 = Working, 5 = Abandoned.
+      if ($current_status == 1 || $current_status == 5) {
+        $node->field_status = 3;
+        $output .= $this->t('Changing status to Working.');
+      }
+      else {
+        $output .= $this->t('Status was not New or Abandoned, so not changing.');
+      }
     }
 
     $userId = $this->currentUser()->id();
@@ -56,11 +59,13 @@ class PuzzleNodeLinksController extends ControllerBase {
       $node->field_current_solvers->removeItem($key);
       $output .= $this->t('Removing user @userId from current solvers.', ['@userId' => $this->currentUser()->id()]);
 
-      $current_status = $node->field_status->target_id;
-      // Status 3 = Working, 5 = Abandoned.
-      if ($current_status == 3 && $node->field_current_solvers->isEmpty()) {
-        $node->field_status = 5;
-        $output .= $this->t('Changing status from Working to Abandoned.');
+      if ($node->bundle() == 'puzzle') {
+        $current_status = $node->field_status->target_id;
+        // Status 3 = Working, 5 = Abandoned.
+        if ($current_status == 3 && $node->field_current_solvers->isEmpty()) {
+          $node->field_status = 5;
+          $output .= $this->t('Changing status from Working to Abandoned.');
+        }
       }
     }
     else {

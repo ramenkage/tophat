@@ -14,6 +14,15 @@ use JoliCode\Slack\ClientFactory;
  */
 function puzzlehunt_entity_presave(EntityInterface $entity) {
   switch ($entity->bundle()) {
+    case 'hunt':
+      // Add current solvers to historical solvers.
+      $currentSolvers = array_column($entity->field_current_solvers->getValue(), 'target_id');
+      $historicalSolvers = array_column($entity->field_historical_solvers->getValue(), 'target_id');
+      $newSolvers = array_diff($currentSolvers, $historicalSolvers);
+      foreach ($newSolvers as $newSolver) {
+        $entity->field_historical_solvers[] = $newSolver;
+      }
+      break;
     case 'round':
       // Create a Google Drive folder if necessary
       if ($entity->field_gdrive_id->isEmpty()) {
@@ -236,22 +245,22 @@ function puzzlehunt_entity_operation(EntityInterface $entity) {
   $operations = array();
   $nodeType = $entity->bundle();
 
-  if ($nodeType == 'puzzle') {
+  if (in_array($nodeType, ['hunt', 'puzzle'])) {
     $nodeId = $entity->id();
     $userId = \Drupal::currentUser()->id();
     $currentSolvers = array_column($entity->field_current_solvers->getValue(), 'target_id');
 
     if (!in_array($userId, $currentSolvers)) {
       $operations['add_solver'] = [
-        'title' => t('Start Working'),
-        'url' => Url::fromRoute('puzzlehunt.add_solver', ['node' => $nodeId]),
+        'title' => ($nodeType == 'hunt') ? t('Join Hunt') : t('Start Working'),
+        'url' => Url::fromRoute('puzzlehunt.add_solver', ['node' => $nodeId], ['query' => \Drupal::destination()->getAsArray()]),
         'weight' => 0,
       ];
     }
     else {
       $operations['remove_solver'] = [
-        'title' => t('Stop Working'),
-        'url' => Url::fromRoute('puzzlehunt.remove_solver', ['node' => $nodeId]),
+        'title' => ($nodeType == 'hunt') ? t('Leave Hunt') : t('Stop Working'),
+        'url' => Url::fromRoute('puzzlehunt.remove_solver', ['node' => $nodeId], ['query' => \Drupal::destination()->getAsArray()]),
         'weight' => 1,
       ];
     }
