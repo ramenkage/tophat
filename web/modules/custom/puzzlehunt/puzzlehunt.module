@@ -7,7 +7,9 @@
 
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Url;
+use JoliCode\Slack\Client;
 use JoliCode\Slack\ClientFactory;
+use JoliCode\Slack\Exception\SlackErrorResponse;
 
 /**
  * Implements hook_entity_presave().
@@ -53,7 +55,7 @@ function puzzlehunt_entity_presave(EntityInterface $entity) {
         } catch (Exception $e) {
           \Drupal::logger('puzzlehunt')->error('Exception while creating folder for round @title (@nid): @emsg', [
             '@title' => $entity->title->value,
-            '@nid' => $entity->id,
+            '@nid' => $entity->id(),
             '@emsg' => $e->getMessage(),
           ]);
         }
@@ -101,7 +103,7 @@ function puzzlehunt_entity_presave(EntityInterface $entity) {
         } catch (Exception $e) {
           \Drupal::logger('puzzlehunt')->error('Exception while creating spreadsheet for puzzle @title (@nid): @emsg', [
             '@title' => $entity->title->value,
-            '@nid' => $entity->id,
+            '@nid' => $entity->id(),
             '@emsg' => $e->getMessage(),
           ]);
         }
@@ -111,24 +113,44 @@ function puzzlehunt_entity_presave(EntityInterface $entity) {
         $config = \Drupal::config('puzzlehunt.adminsettings');
         $slack_client = ClientFactory::create($config->get('slack_token'));
 
+        $channel_prefix = $entity->field_round->entity->field_hunt->entity->field_slack_channel_prefix->value ?? 'p';
         // Enforce channel name constraints
         // "Channel names may only contain lowercase letters, numbers, hyphens, and underscores, and must be 80 characters or less."
-        $channel_name = substr('p-' . preg_replace('/[^a-z0-9]/', '', strtolower($entity->title->value)), 0, 80);
+        $channel_name = $channel_prefix . '-' . preg_replace('/[^a-z0-9]/', '', strtolower($entity->title->value));
+
+        function create_slack_channel(Client $slack_client, string $channel_name, int $attempt = 0) {
+          $adjusted_channel_name = substr($channel_name . ($attempt ? '-' . $attempt : ''), 0, 80);
+
+          try {
+            // Create a Slack channel
+            return $slack_client->conversationsCreate([
+              'name' => $adjusted_channel_name,
+            ]);
+          } catch (SlackErrorResponse $e) {
+            // Try again with a suffix
+            if ($e->getErrorCode() === 'name_taken' && $attempt < 9) return create_slack_channel($slack_client, $channel_name, $attempt + 1);
+            throw $e;
+          }
+        }
 
         try {
           // Create a Slack channel
-          $response = $slack_client->conversationsCreate([
-            'name' => $channel_name,
-          ]);
+          $response = create_slack_channel($slack_client, $channel_name);
 
           // Set field to new channel name
-          $entity->field_slack_channel = $response->getChannel()->getName();
+          $new_channel_name = $response->getChannel()->getName();
+          $entity->field_slack_channel = $new_channel_name;
 
+          \Drupal::logger('puzzlehunt')->notice('Created Slack channel @new_channel_name for puzzle @title (@nid)', [
+            '@new_channel_name' => $new_channel_name,
+            '@title' => $entity->title->value,
+            '@nid' => $entity->id(),
+          ]);
         } catch (Exception $e) {
           \Drupal::logger('puzzlehunt')->error('Exception while creating Slack channel @channel_name for puzzle @title (@nid): @emsg', [
             '@channel_name' => $channel_name,
             '@title' => $entity->title->value,
-            '@nid' => $entity->id,
+            '@nid' => $entity->id(),
             '@emsg' => $e->getMessage(),
           ]);
         }
@@ -159,7 +181,7 @@ function puzzlehunt_entity_insert(EntityInterface $entity)
       } catch (Exception $e) {
         \Drupal::logger('puzzlehunt')->error('Exception while Slacking new round @title (@nid): @emsg', [
           '@title' => $entity->title->value,
-          '@nid' => $entity->id,
+          '@nid' => $entity->id(),
           '@emsg' => $e->getMessage(),
         ]);
       }
@@ -187,7 +209,7 @@ function puzzlehunt_entity_insert(EntityInterface $entity)
       } catch (Exception $e) {
         \Drupal::logger('puzzlehunt')->error('Exception while Slacking new puzzle @title (@nid): @emsg', [
           '@title' => $entity->title->value,
-          '@nid' => $entity->id,
+          '@nid' => $entity->id(),
           '@emsg' => $e->getMessage(),
         ]);
       }
@@ -224,7 +246,7 @@ function puzzlehunt_entity_update(EntityInterface $entity) {
         } catch (Exception $e) {
           \Drupal::logger('puzzlehunt')->error('Exception while Slacking new puzzle @title (@nid): @emsg', [
             '@title' => $entity->title->value,
-            '@nid' => $entity->id,
+            '@nid' => $entity->id(),
             '@emsg' => $e->getMessage(),
           ]);
         }
