@@ -11,29 +11,50 @@ use JoliCode\Slack\ClientFactory;
 
 $config = \Drupal::config('puzzlehunt.adminsettings');
 $slack_client = ClientFactory::create($config->get('slack_token'));
-$channels = $slack_client->conversationsList([
-  'exclude_archived' => TRUE,
-  'limit' => 1000,
-])->getChannels();
-foreach ($channels as $channel) {
-  $channel_id = $channel->getId();
-  $channel_name = $channel->getName();
-  print $channel_name . ' | ';
-  if ($channel->getIsMember()) {
-    print 'Member';
+$cursor = NULL;
+
+do {
+  $params = [
+    'exclude_archived' => TRUE,
+    'limit' => 1000,
+  ];
+  if ($cursor) {
+    $params['cursor'] = $cursor;
+    print '-- next page starting at ' . $cursor . " --\n";
   }
-  else {
-    $slack_client->conversationsJoin(['channel' => $channel_id]);
-    print 'Joined';
+
+  $response = $slack_client->conversationsList($params);
+  $channels = $response->getChannels();
+
+  foreach ($channels as $channel) {
+    $channel_id = $channel->getId();
+    $channel_name = $channel->getName();
+
+    print $channel_name . ' | ';
+
+    if ($channel->getIsMember()) {
+      print 'Member';
+    }
+    else {
+      $slack_client->conversationsJoin(['channel' => $channel_id]);
+      print 'Joined';
+    }
+
+    print ' | ';
+
+    if (str_starts_with($channel_name, 'p-')) {
+      $slack_client->conversationsArchive(['channel' => $channel_id]);
+      print 'Archived';
+      sleep(3);
+    }
+    else {
+      print 'Skipped';
+    }
+
+    print "\n";
   }
-  print ' | ';
-  if (str_starts_with($channel_name, 'p-')) {
-    $slack_client->conversationsArchive(['channel' => $channel_id]);
-    print 'Archived';
-    sleep(3);
-  }
-  else {
-    print 'Skipped';
-  }
-  print "\n";
-}
+
+  $cursor = $response->getResponseMetadata()->getNextCursor();
+} while ($cursor);
+
+print "-- done --\n";
